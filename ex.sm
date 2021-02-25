@@ -1,1 +1,5 @@
-FLAGS :
+FLAGS : "-Wall -o main.o main.c"
+
+# future examples, including setting up compilation with java
+#JAVA_FLAGS : "-o main.out"
+# SETUP main.java USING javac WITH JAVA_FLAGS

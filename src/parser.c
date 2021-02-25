@@ -13,6 +13,17 @@ void get_next_token(Parser_* parser)
 	parser->tokens = next_token(parser->lexer);
 }
 
+void print_err(Parser_* parser)
+{
+	if(parser->tokens->TokenId == EOF)
+	{
+		fprintf(stderr,"Unexpected EOF while parsing. Line %d.\n", parser->lexer->line-1);
+		exit(EXIT_FAILURE);
+	}
+	fprintf(stderr,"Unexpected '%s' while parsing. Line %d.\n", parser->tokens->token_value, parser->lexer->line-1);
+	exit(EXIT_FAILURE);
+}
+
 Parser_* parse_user_define(Parser_* parser)
 {
 	// save variable name to syntax tree here
@@ -23,12 +34,18 @@ Parser_* parse_user_define(Parser_* parser)
 		exit(EXIT_FAILURE);
 	}
 	get_next_token(parser);
-	if(parser->tokens->TokenId == Eof)
+	switch(parser->tokens->TokenId)
 	{
-		fprintf(stderr,"Unexpected EOF while parsing. Line %d\n", parser->lexer->line-1);
-		exit(EXIT_FAILURE);
+		case String:
+		{
+			get_next_token(parser);
+			break;
+		}
+		default:
+		{
+			print_err(parser);
+		}
 	}
-	printf("%d",parser->tokens->TokenId);
 	return parser;
 }
 

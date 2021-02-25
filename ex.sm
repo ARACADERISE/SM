@@ -2,7 +2,7 @@
 # if you want the SM interpreter to interpret all the source code and convert it to a Makefile and have it run the Makefile:
 # RUN AS MAKEFILE
 # ^ the above is all one keyword. This will tell the SM interpreter to create a Makefile, and write source code accordingly.
-# The SM interpreter will then skip all extra steps it would've had to taken to compile your project.
+# The SM interpreter will then skip all extra steps it would've had to taken to compile your project, and instead run this Makefile.
 
 FLAGS : "-Wall -o main.o main.c"
 

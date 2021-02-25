@@ -1,1 +1,14 @@
-make run
+
+if [ ! $2 ]; then
+	if [ $1 ]; then
+		make run file=$1
+	else
+		make run
+	fi
+else
+	echo "Too many arguments"
+fi
+
+if [ -e main.o ]; then
+	make clear
+fi

@@ -7,6 +7,7 @@ Step one:
 
 To setup the 'run' file, simply type the following:
 ```sh
+if
 bash setup.sh
 ```
 

@@ -10,5 +10,5 @@ To setup the 'run' file, simply type the following:
 bash setup.sh
 ```
 
-Step two:
+Step two: </br>
 Type 'run'!

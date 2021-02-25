@@ -1,5 +1,6 @@
 FLAGS : "-Wall -o main.o main.c"
 
-# future examples, including setting up compilation with java
-#JAVA_FLAGS : "-o main.out"
-# SETUP main.java USING javac WITH JAVA_FLAGS
+# future examples, including setting up compilation with java. Example(using a file random.java)
+#JAVA_FLAGS : "-d . " , make sure to include the space. The SM interpreter will not add it.
+# SETUP "random.java" USING javac WITH JAVA_FLAGS
+# COMPILE "pkg.random" WITH java

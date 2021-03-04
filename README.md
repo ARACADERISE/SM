@@ -3,7 +3,7 @@ SM(Simple Makefile) is aimed to simplify Makefiles, in a new language!
 
 As simple as the language might be, it is also very simple to setup!
 
-_Quick Note_: <sub><sup>You have to be root to do this</sup></sub>
+<sub><sup>_Quick Note: You have to be root to do this_</sup></sub>
 
 Step one:
 

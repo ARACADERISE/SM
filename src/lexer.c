@@ -13,6 +13,7 @@ Lexer_* init_lexer(char* source_code)
 
 void advance_index(Lexer_* lexer)
 {
+	if(lexer->curr_char != ' ') lexer->prev_char = lexer->curr_char;
 	lexer->index++;
 	lexer->curr_char = lexer->src[lexer->index];
 	if(lexer->curr_char == '\n')
@@ -51,6 +52,12 @@ char* convert_to_string(char val)
 	return converted_value;
 }
 
+char check_ahead(Lexer_* lexer, int amount)
+{
+	if(!(lexer->src[lexer->index+amount] == '\0')) return lexer->src[lexer->index+amount];
+	return '\0';
+}
+
 char* gather_keyword(Lexer_* lexer)
 {
 	char* keyword = calloc(1,sizeof(*keyword));
@@ -62,6 +69,7 @@ char* gather_keyword(Lexer_* lexer)
 			strlen(keyword)+2*sizeof(*keyword)
 		);
 		strcat(keyword,convert_to_string(lexer->curr_char));
+		if(check_ahead(lexer,1) == '\n') break;
 		advance_index(lexer);
 	} while(isalnum(lexer->curr_char));
 
@@ -70,7 +78,7 @@ char* gather_keyword(Lexer_* lexer)
 
 char* gather_string(Lexer_* lexer)
 {
-	advance_index(lexer); // skipping first '"'
+	if(lexer->curr_char == '"') advance_index(lexer);
 	char* str_value = calloc(1,sizeof(*str_value));
 
 	do
@@ -80,10 +88,36 @@ char* gather_string(Lexer_* lexer)
 			strlen(str_value)+2*sizeof(*str_value)
 		);
 		strcat(str_value,convert_to_string(lexer->curr_char));
+		if(lexer->curr_char == '\\')
+		{
+			if(check_ahead(lexer,1) == 'n')
+			{
+				str_value[strlen(str_value)-1] = '\n';
+				advance_index(lexer); // '\'
+				//advance_index(lexer); // 'n'
+			}
+			if(check_ahead(lexer,1) == 't')
+			{
+				str_value[strlen(str_value)-1] = '\t';
+				advance_index(lexer);
+			}
+		}
+		if(check_ahead(lexer,1) == '"')
+		{
+			advance_index(lexer);
+			break;
+		}
+		if(check_ahead(lexer,1) == '#' || 
+		   check_ahead(lexer,1) == '\0' || 
+		   check_ahead(lexer,1) == '\n') break;
 		advance_index(lexer);
-	} while(lexer->curr_char != '"');
+	} while(1);
 
-	advance_index(lexer); // skipping last '"'
+	if(str_value[strlen(str_value)-1] == ' ') str_value[strlen(str_value)-1] = '\0';
+	//if(lexer->curr_char == '"') advance_index(lexer);
+
+	//if(lexer->curr_char == ' ') skip_whitespace(lexer);
+	//advance_index(lexer); // skipping '\n'
 	return str_value;
 }
 
@@ -106,9 +140,15 @@ Tokens_* next_token(Lexer_* lexer)
 		if(isalnum(lexer->curr_char)) // Implement keyword later, for now, just have user-defined keyword
 		{
 			char* var = gather_keyword(lexer);
-			return create_token(lexer,Id,var);
+			if(strcmp(var,"echo")==0) return create_token(lexer,Echo,var);
+			else return create_token(lexer,Id,var);
 		}
 		if(lexer->curr_char == '"')
+		{
+			char* str = gather_string(lexer);
+			return create_token(lexer,String,str);
+		}
+		if(lexer->prev_char == ':')
 		{
 			char* string_value = gather_string(lexer);
 			return create_token(lexer,String,string_value);
